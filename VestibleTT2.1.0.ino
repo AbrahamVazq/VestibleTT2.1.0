@@ -201,6 +201,7 @@ void interrumpe()
     delay(500);                   // Duerme 500 mS
     digitalWrite(7,LOW);          // Apaga el LED en el pin 7
     Serial.println(+ "]");        // Imprime en consola el caracter de corchete cerrado
+    BLE();
     Serial.println("Pausando escritura de Archivo en un bloque e iniciando otro.");
     Serial.println(+ "[");      
     archivo.println(+ "]");       // Imprime en el ARCHIVO un corchete Cerrado
@@ -253,18 +254,8 @@ void BLE()
  
   BLEMini.write(data);
 //  BLEMini.write('H');
-//  BLEMini.write('e');
-//  BLEMini.write('l');
-//  BLEMini.write('l');
-//  BLEMini.write('o');
-//  BLEMini.write(' ');
-//  BLEMini.write('W');
-//  BLEMini.write('o');
-//  BLEMini.write('r');
-//  BLEMini.write('l');
-//  BLEMini.write('d');
-//  BLEMini.write('!');
+
     archivo.close();
-    delay(1000);
+//    delay(1000);
 }
 
