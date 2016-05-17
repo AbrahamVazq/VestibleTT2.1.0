@@ -200,10 +200,10 @@ void interrumpe()
     delay(500);                   // Duerme 500 mS
     digitalWrite(7,LOW);          // Apaga el LED en el pin 7
     Serial.println(+ "]");        // Imprime en consola el caracter de corchete cerrado
-    BLE();
     Serial.println("Pausando escritura de Archivo en un bloque e iniciando otro.");
     Serial.println(+ "[");      
     archivo.println(+ "]");       // Imprime en el ARCHIVO un corchete Cerrado
+    BLE();    
     archivo.println(+ "[");       // Imprime en el ARCHIVO un corchete Abierto
     delay(5000);                  // Duerme 5 segundos
 }
