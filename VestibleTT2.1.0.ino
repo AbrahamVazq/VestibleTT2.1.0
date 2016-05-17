@@ -3,6 +3,8 @@
 #include <SdFat.h>
 #include <Time.h>
 #include <Arduino.h>
+#include <._ble_mini.h>
+#include <ble_mini.h>
 
 #if defined (__AVR_ATmega168__) || defined (__AVR_ATmega328P__)  
   AltSoftSerial BLEMini;  
