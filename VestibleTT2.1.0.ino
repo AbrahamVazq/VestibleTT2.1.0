@@ -3,6 +3,13 @@
 #include <SdFat.h>
 #include <Time.h>
 #include <Arduino.h>
+
+#if defined (__AVR_ATmega168__) || defined (__AVR_ATmega328P__)  
+  AltSoftSerial BLEMini;  
+#else
+  #define BLEMini Serial1
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*Creamos objetos de la clase SdFat */
 SdFat sd;                         // Creamos un objeto de la clase SdFat llamado sd
@@ -41,7 +48,9 @@ void setup()
   pinMode(3,OUTPUT);                // Pin que nos dira si el lector esta en uso
   pinMode(7,OUTPUT);                // Recibe la señal de pausa desde el LED
   pinMode(8,INPUT);                 // Boton que envia la señal de pausa 
-  
+
+  BLEMini.begin(57600); 
+  //Serial.begin(57600); 
   setTime(16,00,00,9,3,2016);       //Incializamos una fecha y hora de referencia
   Serial.begin(115200);
 
@@ -76,6 +85,10 @@ void setup()
   archivo.close();                                          // Funcion que cierra el Archivo
   Serial.println("Archivo Cerrado.");
 }
+
+
+unsigned char buf[16] = {0};
+unsigned char len = 0;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////// M A I N //////////////////////////////////////////////////////
@@ -193,3 +206,63 @@ void interrumpe()
     delay(5000);                  // Duerme 5 segundos
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+void BLE()
+{
+  while ( BLEMini.available())
+  {
+    Serial.write( BLEMini.read() );
+  }
+
+  while ( Serial.available() )
+  {
+    unsigned char c = Serial.read();
+    if (c != 0x0A)
+    {
+      if (len < 16)
+        buf[len++] = c;
+    }
+    else
+    {
+      buf[len++] = 0x0A;
+      
+      for (int i = 0; i < len; i++)
+         BLEMini.write(buf[i]);
+      len = 0;
+    }
+  }
+
+     /* Re-abrimos el archivo para lectura */
+   if (!archivo.open("Temperatura.txt", O_RDWR | O_CREAT | O_AT_END))     // Compara si el archivo se ha abierto si no, lanza el error
+  {
+    sd.errorHalt("Error! no se puede abrir el archivo Temperatura.txt"); // Imprime un error de incapacidad para abrir el archivo
+    digitalWrite(3, LOW);
+  }
+  else
+  {
+    digitalWrite(3, HIGH);
+  }
+
+  // read from the file until there's nothing else in it:
+  int data;
+  while ((data = archivo.read()) >= 0) {
+    Serial.write(data);
+  }
+  // close the file:
+ 
+  BLEMini.write(data);
+//  BLEMini.write('H');
+//  BLEMini.write('e');
+//  BLEMini.write('l');
+//  BLEMini.write('l');
+//  BLEMini.write('o');
+//  BLEMini.write(' ');
+//  BLEMini.write('W');
+//  BLEMini.write('o');
+//  BLEMini.write('r');
+//  BLEMini.write('l');
+//  BLEMini.write('d');
+//  BLEMini.write('!');
+    archivo.close();
+    delay(1000);
+}
+
