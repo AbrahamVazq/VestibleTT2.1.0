@@ -44,6 +44,10 @@ void setup()
   
   setTime(16,00,00,9,3,2016);       //Incializamos una fecha y hora de referencia
   Serial.begin(115200);
+
+  //BLEMini.begin(57600); 
+  //Serial.begin(57600);
+    
   interruptSetup();                 // Inicia la lectura del Sensor de pulso cada 2m
 
   /*Si estas alimentando el Sensor de Pulso con un voltaje menor del que maneja Arduino Leonardo
